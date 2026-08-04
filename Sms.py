@@ -180,3 +180,85 @@ def print_menu():
     print("7. View Student Report")
     print("8. Exit")
     print("=" * 50)
+# ========================================
+# MAIN PROGRAM
+# ========================================
+
+def main():
+    """Main program loop"""
+    school = School()  # Create school object
+    running = True
+    
+    while running:
+        print_menu()
+        choice = input("Enter your choice (1-8): ")
+        
+        # 1. ADD STUDENT
+        if choice == "1":
+            print("\n--- ADD STUDENT ---")
+            name = input("Student Name: ")
+            age = get_valid_input("Age: ", int)
+            student_id = generate_student_id()
+            
+            student = Student(name, age, student_id)
+            school.add_student(student)
+            print(f"📌 Student ID: {student_id}")
+        
+        # 2. ADD COURSE
+        elif choice == "2":
+            print("\n--- ADD COURSE ---")
+            name = input("Course Name: ")
+            code = generate_course_code()
+            credits = get_valid_input("Credits: ", int)
+            
+            course = Course(code, name, credits)
+            school.add_course(course)
+            print(f"📌 Course Code: {code}")
+        
+        # 3. ENROLL STUDENT
+        elif choice == "3":
+            print("\n--- ENROLL STUDENT ---")
+            student_id = input("Enter Student ID: ")
+            course_code = input("Enter Course Code: ")
+            school.enroll_student(student_id, course_code)
+        
+        # 4. ADD GRADE
+        elif choice == "4":
+            print("\n--- ADD GRADE ---")
+            student_id = input("Enter Student ID: ")
+            student = school.find_student(student_id)
+            
+            if student:
+                grade = get_valid_input("Enter Grade (0-100): ", float)
+                if student.add_grade(grade):
+                    print(f"✅ Grade {grade} added to {student.name}")
+                else:
+                    print("❌ Invalid grade! Must be between 0-100")
+            else:
+                print("❌ Student not found!")
+        
+        # 5. VIEW ALL STUDENTS
+        elif choice == "5":
+            school.show_all_students()
+        
+        # 6. VIEW ALL COURSES
+        elif choice == "6":
+            school.show_all_courses()
+        
+        # 7. VIEW STUDENT REPORT
+        elif choice == "7":
+            print("\n--- STUDENT REPORT ---")
+            student_id = input("Enter Student ID: ")
+            school.show_student_report(student_id)
+        
+        # 8. EXIT
+        elif choice == "8":
+            print("\n👋 Goodbye! Keep learning!")
+            running = False
+        
+        else:
+            print("❌ Invalid choice! Please select 1-8")
+        
+        # Pause before showing menu again
+        if running:
+            input("\nPress Enter to continue...")
