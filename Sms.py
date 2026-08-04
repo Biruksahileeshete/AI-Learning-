@@ -36,3 +36,28 @@ class Student:
         print(f"Average Grade: {self.get_average():.2f}")
         print(f"Courses: {', '.join(self.courses) if self.courses else 'None'}")
         print("=" * 40)
+
+class Course:
+    """Simple Course class"""
+    def __init__(self, code, name, credits):
+        self.code = code
+        self.name = name
+        self.credits = credits
+        self.students = []  # List of student IDs
+    
+    def add_student(self, student_id):
+        """Add a student to course"""
+        self.students.append(student_id)
+    
+    def get_student_count(self):
+        """Get number of students"""
+        return len(self.students)
+    
+    def show_info(self):
+        """Display course information"""
+        print("=" * 40)
+        print(f"Course Code: {self.code}")
+        print(f"Course Name: {self.name}")
+        print(f"Credits: {self.credits}")
+        print(f"Students Enrolled: {self.get_student_count()}")
+        print("=" * 40)
