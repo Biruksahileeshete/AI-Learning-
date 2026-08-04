@@ -61,3 +61,80 @@ class Course:
         print(f"Credits: {self.credits}")
         print(f"Students Enrolled: {self.get_student_count()}")
         print("=" * 40)
+class School:
+    """Main School Management System"""
+    def __init__(self):
+        self.students = []  # List to store all students
+        self.courses = []   # List to store all courses
+    
+    def add_student(self, student):
+        """Add a student to school"""
+        self.students.append(student)
+        print(f"✅ Student {student.name} added successfully!")
+    
+    def add_course(self, course):
+        """Add a course to school"""
+        self.courses.append(course)
+        print(f"✅ Course {course.name} added successfully!")
+    
+    def find_student(self, student_id):
+        """Find a student by ID"""
+        for student in self.students:
+            if student.student_id == student_id:
+                return student
+        return None
+    
+    def find_course(self, course_code):
+        """Find a course by code"""
+        for course in self.courses:
+            if course.code == course_code:
+                return course
+        return None
+    
+    def enroll_student(self, student_id, course_code):
+        """Enroll student in a course"""
+        student = self.find_student(student_id)
+        course = self.find_course(course_code)
+        
+        if student and course:
+            student.enroll_course(course.name)
+            course.add_student(student_id)
+            print(f"✅ {student.name} enrolled in {course.name}")
+            return True
+        else:
+            print("❌ Student or Course not found!")
+            return False
+    
+    def show_all_students(self):
+        """Display all students"""
+        if len(self.students) == 0:
+            print("📭 No students in the system")
+            return
+        
+        print("\n" + "=" * 50)
+        print("ALL STUDENTS")
+        print("=" * 50)
+        for student in self.students:
+            print(f"ID: {student.student_id} | Name: {student.name} | Age: {student.age}")
+        print("=" * 50)
+    
+    def show_all_courses(self):
+        """Display all courses"""
+        if len(self.courses) == 0:
+            print("📭 No courses in the system")
+            return
+        
+        print("\n" + "=" * 50)
+        print("ALL COURSES")
+        print("=" * 50)
+        for course in self.courses:
+            print(f"Code: {course.code} | Name: {course.name} | Credits: {course.credits}")
+        print("=" * 50)
+    
+    def show_student_report(self, student_id):
+        """Show detailed report for a student"""
+        student = self.find_student(student_id)
+        if student:
+            student.show_info()
+        else:
+            print("❌ Student not found!")
