@@ -138,3 +138,45 @@ class School:
             student.show_info()
         else:
             print("❌ Student not found!")
+# ========================================
+# HELPER FUNCTIONS
+# ========================================
+
+def generate_student_id():
+    """Generate a simple student ID"""
+    import random
+    return f"S{random.randint(100, 999)}"
+
+def generate_course_code():
+    """Generate a simple course code"""
+    import random
+    return f"C{random.randint(100, 999)}"
+
+def get_valid_input(prompt, data_type=str):
+    """Get valid input from user"""
+    while True:
+        try:
+            user_input = input(prompt)
+            if data_type == int:
+                return int(user_input)
+            elif data_type == float:
+                return float(user_input)
+            else:
+                return user_input
+        except ValueError:
+            print("❌ Invalid input! Please try again.")
+
+def print_menu():
+    """Display main menu"""
+    print("\n" + "=" * 50)
+    print("📚 STUDENT MANAGEMENT SYSTEM")
+    print("=" * 50)
+    print("1. Add Student")
+    print("2. Add Course")
+    print("3. Enroll Student in Course")
+    print("4. Add Grade")
+    print("5. View All Students")
+    print("6. View All Courses")
+    print("7. View Student Report")
+    print("8. Exit")
+    print("=" * 50)
