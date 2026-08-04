@@ -262,3 +262,11 @@ def main():
         # Pause before showing menu again
         if running:
             input("\nPress Enter to continue...")
+# ========================================
+# RUN THE PROGRAM
+# ========================================
+
+if __name__ == "__main__":
+    print("\n🎓 WELCOME TO STUDENT MANAGEMENT SYSTEM")
+    print("Simple. Easy. Effective.\n")
+    main()
