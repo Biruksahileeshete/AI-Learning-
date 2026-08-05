@@ -376,3 +376,31 @@ def matrix_challenges():
     print("\n4. Create a 3x3 random matrix:")
     random_matrix = np.random.rand(3, 3)
     print(random_matrix)
+# ========================================
+# RUN THE PROGRAM
+# ========================================
+
+if __name__ == "__main__":
+    print("\n🎯 WELCOME TO THE MATRIX CALCULATOR")
+    print("Learn NumPy arrays and matrix operations!")
+    print("=" * 50)
+    
+    print("\nChoose mode:")
+    print("1. Full Matrix Calculator (with menu)")
+    print("2. Simple Matrix Calculator (no OOP)")
+    print("3. NumPy Operations Demo")
+    print("4. Matrix Challenges")
+    
+    mode = input("\nEnter choice (1-4): ")
+    
+    if mode == "1":
+        main()
+    elif mode == "2":
+        simple_matrix_calculator()
+    elif mode == "3":
+        demonstrate_numpy_operations()
+    elif mode == "4":
+        matrix_challenges()
+    else:
+        print("Invalid choice! Running full calculator...")
+        main()   
