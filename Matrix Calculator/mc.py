@@ -301,3 +301,78 @@ def main():
             print("❌ Invalid choice! Please select 1-12")
         
         input("\nPress Enter to continue...")
+# ========================================
+# BONUS: STANDALONE FUNCTIONS FOR LEARNING
+# ========================================
+
+def create_matrix_manually():
+    """Create a matrix without using the class"""
+    rows = int(input("Enter rows: "))
+    cols = int(input("Enter cols: "))
+    
+    print("Enter values row by row:")
+    matrix = []
+    for i in range(rows):
+        row = []
+        for j in range(cols):
+            val = float(input(f"Value ({i+1},{j+1}): "))
+            row.append(val)
+        matrix.append(row)
+    
+    return np.array(matrix)
+
+def demonstrate_numpy_operations():
+    """Show basic NumPy operations"""
+    print("\n🔍 NUMPY ARRAY OPERATIONS DEMONSTRATION")
+    print("=" * 50)
+    
+    # Create arrays
+    a = np.array([[1, 2, 3], [4, 5, 6]])
+    b = np.array([[7, 8, 9], [10, 11, 12]])
+    
+    print("Matrix A:")
+    print(a)
+    print("\nMatrix B:")
+    print(b)
+    
+    # Basic operations
+    print("\n📊 Basic Operations:")
+    print(f"Addition:\n{a + b}")
+    print(f"\nSubtraction:\n{a - b}")
+    print(f"\nElement-wise Multiplication:\n{a * b}")
+    print(f"\nScalar Multiplication (×2):\n{a * 2}")
+    print(f"\nTranspose:\n{a.T}")
+    
+    # Statistics
+    print("\n📈 Statistics:")
+    print(f"Mean: {np.mean(a)}")
+    print(f"Sum: {np.sum(a)}")
+    print(f"Min: {np.min(a)}")
+    print(f"Max: {np.max(a)}")
+    print(f"Shape: {a.shape}")
+    print(f"Size: {a.size}")
+
+def matrix_challenges():
+    """Practice challenges"""
+    print("\n🎯 MATRIX CHALLENGES")
+    print("=" * 50)
+    
+    # Challenge 1: Create an identity matrix
+    print("\n1. Create a 3x3 identity matrix:")
+    identity = np.eye(3)
+    print(identity)
+    
+    # Challenge 2: Create a matrix of zeros
+    print("\n2. Create a 3x4 matrix of zeros:")
+    zeros = np.zeros((3, 4))
+    print(zeros)
+    
+    # Challenge 3: Create a matrix of ones
+    print("\n3. Create a 2x5 matrix of ones:")
+    ones = np.ones((2, 5))
+    print(ones)
+    
+    # Challenge 4: Create a random matrix
+    print("\n4. Create a 3x3 random matrix:")
+    random_matrix = np.random.rand(3, 3)
+    print(random_matrix)
