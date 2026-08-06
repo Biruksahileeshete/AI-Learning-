@@ -342,4 +342,86 @@ class DataAnalyzer:
             f.write(f"  Average Grade: {self.df['Average'].mean():.2f}\n")
             f.write(f"  Top Student: {self.df.nlargest(1, 'Average')['Name'].iloc[0]}\n")
         
-        print("\n✅ Report saved to 'analysis_report.txt'")
+        print("\n✅ Report saved to 'analysis_report.txt'")# ========================================
+# METHOD: run_analysis
+# Main program loop with menu
+# ========================================
+
+    def run_analysis(self):
+        """Run complete analysis"""
+        print("\n🎯 WELCOME TO DATA ANALYSIS TOOL")
+        print("=" * 50)
+        
+        # Create or load data
+        choice = input("\nLoad data from CSV or create sample? (L/S): ").upper()
+        
+        if choice == 'L':
+            filename = input("Enter CSV filename: ")
+            self.load_from_csv(filename)
+        else:
+            self.create_sample_data()
+            self.save_to_csv('student_data.csv')
+        
+        if self.df is None:
+            print("❌ No data available. Exiting...")
+            return
+        
+        # Menu loop
+        while True:
+            print("\n" + "=" * 50)
+            print("📊 DATA ANALYSIS MENU")
+            print("=" * 50)
+            print("1. Show Basic Info")
+            print("2. Show Statistics")
+            print("3. Check Missing Data")
+            print("4. Analyze Grades")
+            print("5. Analyze Correlations")
+            print("6. Find Top Performers")
+            print("7. Create Visualizations")
+            print("8. Generate Full Report")
+            print("9. Save Data to CSV")
+            print("10. Exit")
+            print("=" * 50)
+            
+            choice = input("\nEnter your choice (1-10): ")
+            
+            if choice == '1':
+                self.show_basic_info()
+            elif choice == '2':
+                self.show_statistics()
+            elif choice == '3':
+                self.check_missing_data()
+            elif choice == '4':
+                self.analyze_grades()
+            elif choice == '5':
+                self.analyze_correlations()
+            elif choice == '6':
+                n = int(input("How many top students to show? (default 5): ") or 5)
+                self.find_top_performers(n)
+            elif choice == '7':
+                self.create_visualizations()
+            elif choice == '8':
+                self.generate_report()
+            elif choice == '9':
+                filename = input("Enter filename to save: ")
+                self.save_to_csv(filename)
+            elif choice == '10':
+                print("\n👋 Goodbye! Thanks for using Data Analysis Tool!")
+                break
+            else:
+                print("❌ Invalid choice!")
+            
+            input("\nPress Enter to continue...")
+
+
+# ========================================
+# MAIN PROGRAM - Entry Point
+# ========================================
+
+if __name__ == "__main__":
+    print("\n🎯 WELCOME TO DATA ANALYSIS TOOL")
+    print("Learn to analyze datasets with Python!")
+    print("=" * 50)
+    
+    analyzer = DataAnalyzer()
+    analyzer.run_analysis()
