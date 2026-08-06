@@ -225,3 +225,121 @@ class DataAnalyzer:
                     col1 = correlation.columns[i]
                     col2 = correlation.columns[j]
                     print(f"  {col1} ↔ {col2}: {corr:.3f}")
+                    # ========================================
+# METHOD: find_top_performers
+# Identifies top performing students
+# ========================================
+
+    def find_top_performers(self, n=5):
+        """Find top performing students"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print(f"🏆 TOP {n} PERFORMING STUDENTS")
+        print("=" * 60)
+        
+        grade_cols = ['Grade_English', 'Grade_Math', 'Grade_Science', 'Grade_History']
+        self.df['Average'] = self.df[grade_cols].mean(axis=1)
+        
+        top_students = self.df.nlargest(n, 'Average')
+        
+        print("\nTop Students:")
+        for i, (_, row) in enumerate(top_students.iterrows(), 1):
+            print(f"\n{i}. {row['Name']} (ID: {row['Student_ID']})")
+            print(f"   Average: {row['Average']:.2f}")
+            print(f"   English: {row['Grade_English']}")
+            print(f"   Math: {row['Grade_Math']}")
+            print(f"   Science: {row['Grade_Science']}")
+            print(f"   History: {row['Grade_History']}")
+            print(f"   Study Hours: {row['Study_Hours']}")
+            print(f"   Attendance: {row['Attendance']}%")
+
+
+# ========================================
+# METHOD: create_visualizations
+# Creates data visualizations
+# ========================================
+
+    def create_visualizations(self):
+        """Create data visualizations"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n📊 Creating visualizations...")
+        
+        # Create figure with subplots
+        fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+        fig.suptitle('Student Data Analysis', fontsize=16)
+        
+        # 1. Grade Distribution
+        grade_cols = ['Grade_English', 'Grade_Math', 'Grade_Science', 'Grade_History']
+        avg_grades = [self.df[col].mean() for col in grade_cols]
+        axes[0, 0].bar(grade_cols, avg_grades, color=['blue', 'green', 'red', 'orange'])
+        axes[0, 0].set_title('Average Grades by Subject')
+        axes[0, 0].set_ylabel('Average Score')
+        axes[0, 0].set_ylim(0, 100)
+        
+        # 2. Study Hours vs Grades
+        axes[0, 1].scatter(self.df['Study_Hours'], self.df['Average'], color='purple', alpha=0.6)
+        axes[0, 1].set_title('Study Hours vs Average Grade')
+        axes[0, 1].set_xlabel('Study Hours')
+        axes[0, 1].set_ylabel('Average Grade')
+        
+        # 3. Attendance vs Grades
+        axes[1, 0].scatter(self.df['Attendance'], self.df['Average'], color='green', alpha=0.6)
+        axes[1, 0].set_title('Attendance vs Average Grade')
+        axes[1, 0].set_xlabel('Attendance %')
+        axes[1, 0].set_ylabel('Average Grade')
+        
+        # 4. Grade Distribution Histogram
+        axes[1, 1].hist(self.df['Average'], bins=10, color='orange', edgecolor='black')
+        axes[1, 1].set_title('Grade Distribution')
+        axes[1, 1].set_xlabel('Average Grade')
+        axes[1, 1].set_ylabel('Number of Students')
+        
+        plt.tight_layout()
+        plt.show()
+        print("✅ Visualizations displayed!")
+
+
+# ========================================
+# METHOD: generate_report
+# Generates complete analysis report
+# ========================================
+
+    def generate_report(self):
+        """Generate a complete analysis report"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print("📋 COMPLETE ANALYSIS REPORT")
+        print("=" * 60)
+        print(f"Report Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        # Show all analysis
+        self.show_basic_info()
+        self.show_statistics()
+        self.check_missing_data()
+        self.analyze_grades()
+        self.analyze_correlations()
+        self.find_top_performers(3)
+        
+        # Save report to text file
+        with open('analysis_report.txt', 'w') as f:
+            f.write("=" * 60 + "\n")
+            f.write("STUDENT DATA ANALYSIS REPORT\n")
+            f.write("=" * 60 + "\n")
+            f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            
+            f.write("Dataset Information:\n")
+            f.write(f"  Total Students: {len(self.df)}\n")
+            f.write(f"  Subjects: English, Math, Science, History\n")
+            f.write(f"  Average Grade: {self.df['Average'].mean():.2f}\n")
+            f.write(f"  Top Student: {self.df.nlargest(1, 'Average')['Name'].iloc[0]}\n")
+        
+        print("\n✅ Report saved to 'analysis_report.txt'")
