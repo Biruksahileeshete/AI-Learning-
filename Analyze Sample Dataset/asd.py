@@ -195,7 +195,21 @@ class DataAnalyzer:
             print(f"    B (80-89): {len(self.df[(self.df[col] >= 80) & (self.df[col] < 90)])}")
             print(f"    C (70-79): {len(self.df[(self.df[col] >= 70) & (self.df[col] < 80)])}")
             print(f"    D (60-69): {len(self.df[(self.df[col] >= 60) & (self.df[col] < 70)])}")
-            print(f"    F (0-59): {len(self.df[self.df[col] < 60])}")# ========================================
+            print(f"    F (0-59): {len(self.df[self.df[col] < 60])}")
+
+    def ensure_average_exists(self):
+        """Ensure the Average column exists for the dataset."""
+        if self.df is None:
+            return
+
+        grade_cols = ['Grade_English', 'Grade_Math', 'Grade_Science', 'Grade_History']
+        if 'Average' not in self.df.columns:
+            if all(col in self.df.columns for col in grade_cols):
+                self.df['Average'] = self.df[grade_cols].mean(axis=1)
+            else:
+                print("❌ Cannot compute Average: grade columns are missing.")
+
+# ========================================
 # METHOD: analyze_correlations
 # Finds correlations between variables
 # ========================================
@@ -267,6 +281,8 @@ class DataAnalyzer:
         if self.df is None:
             print("❌ No data loaded!")
             return
+        
+        self.ensure_average_exists()
         
         print("\n📊 Creating visualizations...")
         
@@ -399,8 +415,10 @@ class DataAnalyzer:
                 n = int(input("How many top students to show? (default 5): ") or 5)
                 self.find_top_performers(n)
             elif choice == '7':
+                self.ensure_average_exists()
                 self.create_visualizations()
             elif choice == '8':
+                self.ensure_average_exists()
                 self.generate_report()
             elif choice == '9':
                 filename = input("Enter filename to save: ")
