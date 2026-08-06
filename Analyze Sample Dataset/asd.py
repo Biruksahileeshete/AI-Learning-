@@ -160,4 +160,39 @@ class DataAnalyzer:
             print("\n❌ Missing values found:")
             for col, count in missing.items():
                 if count > 0:
-                    print(f"  {col}: {count} missing values ({count/len(self.df)*100:.1f}%)")
+                    print(f"  {col}: {count} missing values ({count/len(self.df)*100:.1f}%)")# ========================================
+# METHOD: analyze_grades
+# Analyzes grade data across subjects
+# ========================================
+
+    def analyze_grades(self):
+        """Analyze grade data"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print("🎓 GRADE ANALYSIS")
+        print("=" * 60)
+        
+        grade_cols = ['Grade_English', 'Grade_Math', 'Grade_Science', 'Grade_History']
+        
+        # Calculate averages
+        print("\n📊 Average Grades:")
+        for col in grade_cols:
+            avg = self.df[col].mean()
+            print(f"  {col.replace('Grade_', '')}: {avg:.2f}")
+        
+        # Overall average
+        self.df['Average'] = self.df[grade_cols].mean(axis=1)
+        print(f"\n📈 Overall Class Average: {self.df['Average'].mean():.2f}")
+        
+        # Grade distribution
+        print("\n📊 Grade Distribution:")
+        for col in grade_cols:
+            print(f"\n  {col.replace('Grade_', '')}:")
+            print(f"    A (90-100): {len(self.df[self.df[col] >= 90])}")
+            print(f"    B (80-89): {len(self.df[(self.df[col] >= 80) & (self.df[col] < 90)])}")
+            print(f"    C (70-79): {len(self.df[(self.df[col] >= 70) & (self.df[col] < 80)])}")
+            print(f"    D (60-69): {len(self.df[(self.df[col] >= 60) & (self.df[col] < 70)])}")
+            print(f"    F (0-59): {len(self.df[self.df[col] < 60])}")
