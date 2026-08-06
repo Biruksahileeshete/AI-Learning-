@@ -50,3 +50,17 @@ class DataAnalyzer:
         self.df = pd.DataFrame(data)
         print("✅ Dataset created successfully!")
         return self.df
+# ========================================
+# METHOD: load_from_csv
+# Loads data from a CSV file
+# ========================================
+
+    def load_from_csv(self, filename):
+        """Load data from CSV file"""
+        try:
+            self.df = pd.read_csv(filename)
+            print(f"✅ Data loaded from {filename}")
+            return self.df
+        except FileNotFoundError:
+            print(f"❌ File {filename} not found!")
+            return None
