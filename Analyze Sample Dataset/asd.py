@@ -195,4 +195,33 @@ class DataAnalyzer:
             print(f"    B (80-89): {len(self.df[(self.df[col] >= 80) & (self.df[col] < 90)])}")
             print(f"    C (70-79): {len(self.df[(self.df[col] >= 70) & (self.df[col] < 80)])}")
             print(f"    D (60-69): {len(self.df[(self.df[col] >= 60) & (self.df[col] < 70)])}")
-            print(f"    F (0-59): {len(self.df[self.df[col] < 60])}")
+            print(f"    F (0-59): {len(self.df[self.df[col] < 60])}")# ========================================
+# METHOD: analyze_correlations
+# Finds correlations between variables
+# ========================================
+
+    def analyze_correlations(self):
+        """Analyze correlations between variables"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print("🔗 CORRELATION ANALYSIS")
+        print("=" * 60)
+        
+        numeric_cols = self.df.select_dtypes(include=[np.number])
+        correlation = numeric_cols.corr()
+        
+        print("\n📊 Correlation Matrix:")
+        print(correlation)
+        
+        # Find strongest correlations
+        print("\n💡 Strongest Correlations:")
+        for i in range(len(correlation.columns)):
+            for j in range(i+1, len(correlation.columns)):
+                corr = correlation.iloc[i, j]
+                if abs(corr) > 0.5:
+                    col1 = correlation.columns[i]
+                    col2 = correlation.columns[j]
+                    print(f"  {col1} ↔ {col2}: {corr:.3f}")
