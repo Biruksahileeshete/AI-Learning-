@@ -64,3 +64,15 @@ class DataAnalyzer:
         except FileNotFoundError:
             print(f"❌ File {filename} not found!")
             return None
+# ========================================
+# METHOD: save_to_csv
+# Saves data to a CSV file
+# ========================================
+
+    def save_to_csv(self, filename):
+        """Save data to CSV file"""
+        if self.df is not None:
+            self.df.to_csv(filename, index=False)
+            print(f"✅ Data saved to {filename}")
+        else:
+            print("❌ No data to save!")
