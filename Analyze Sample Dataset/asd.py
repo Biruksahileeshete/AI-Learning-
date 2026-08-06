@@ -138,3 +138,26 @@ class DataAnalyzer:
             print(f"  Min: {self.df[col].min():.2f}")
             print(f"  Max: {self.df[col].max():.2f}")
             print(f"  Range: {self.df[col].max() - self.df[col].min():.2f}")
+            # ========================================
+# METHOD: check_missing_data
+# Checks for missing values in the dataset
+# ========================================
+
+    def check_missing_data(self):
+        """Check for missing values"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print("🔍 MISSING DATA CHECK")
+        print("=" * 60)
+        
+        missing = self.df.isnull().sum()
+        if missing.sum() == 0:
+            print("✅ No missing values found!")
+        else:
+            print("\n❌ Missing values found:")
+            for col, count in missing.items():
+                if count > 0:
+                    print(f"  {col}: {count} missing values ({count/len(self.df)*100:.1f}%)")
