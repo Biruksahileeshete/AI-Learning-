@@ -76,3 +76,34 @@ class DataAnalyzer:
             print(f"✅ Data saved to {filename}")
         else:
             print("❌ No data to save!")
+# ========================================
+# METHOD: show_basic_info
+# Displays basic dataset information
+# ========================================
+
+    def show_basic_info(self):
+        """Display basic information about the dataset"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print("📋 BASIC INFORMATION")
+        print("=" * 60)
+        
+        print(f"\nDataset Shape: {self.df.shape}")
+        print(f"Rows: {self.df.shape[0]}")
+        print(f"Columns: {self.df.shape[1]}")
+        
+        print("\n📊 Column Names:")
+        for col in self.df.columns:
+            print(f"  - {col}")
+        
+        print("\n📈 Data Types:")
+        print(self.df.dtypes)
+        
+        print("\n🔍 First 5 Rows:")
+        print(self.df.head())
+        
+        print("\n🔍 Last 5 Rows:")
+        print(self.df.tail())
