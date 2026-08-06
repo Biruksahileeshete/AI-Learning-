@@ -107,3 +107,34 @@ class DataAnalyzer:
         
         print("\n🔍 Last 5 Rows:")
         print(self.df.tail())
+# ========================================
+# METHOD: show_statistics
+# Calculates and displays statistical summary
+# ========================================
+
+    def show_statistics(self):
+        """Display statistical summary"""
+        if self.df is None:
+            print("❌ No data loaded!")
+            return
+        
+        print("\n" + "=" * 60)
+        print("📊 STATISTICAL SUMMARY")
+        print("=" * 60)
+        
+        # Select only numeric columns
+        numeric_cols = self.df.select_dtypes(include=[np.number])
+        
+        print("\n📈 Descriptive Statistics:")
+        print(numeric_cols.describe())
+        
+        print("\n📊 Individual Statistics:")
+        for col in numeric_cols.columns:
+            print(f"\n{col}:")
+            print(f"  Mean: {self.df[col].mean():.2f}")
+            print(f"  Median: {self.df[col].median():.2f}")
+            print(f"  Mode: {self.df[col].mode()[0]:.2f}")
+            print(f"  Std Dev: {self.df[col].std():.2f}")
+            print(f"  Min: {self.df[col].min():.2f}")
+            print(f"  Max: {self.df[col].max():.2f}")
+            print(f"  Range: {self.df[col].max() - self.df[col].min():.2f}")
