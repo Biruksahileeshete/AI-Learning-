@@ -20,6 +20,8 @@ class DataAnalyzer:
     def __init__(self):
         self.data = None
         self.df = None
+
+
 # ========================================
 # METHOD: create_sample_data
 # Generates a sample student dataset
@@ -50,6 +52,8 @@ class DataAnalyzer:
         self.df = pd.DataFrame(data)
         print("✅ Dataset created successfully!")
         return self.df
+
+
 # ========================================
 # METHOD: load_from_csv
 # Loads data from a CSV file
@@ -64,6 +68,8 @@ class DataAnalyzer:
         except FileNotFoundError:
             print(f"❌ File {filename} not found!")
             return None
+
+
 # ========================================
 # METHOD: save_to_csv
 # Saves data to a CSV file
@@ -76,6 +82,8 @@ class DataAnalyzer:
             print(f"✅ Data saved to {filename}")
         else:
             print("❌ No data to save!")
+
+
 # ========================================
 # METHOD: show_basic_info
 # Displays basic dataset information
@@ -107,6 +115,8 @@ class DataAnalyzer:
         
         print("\n🔍 Last 5 Rows:")
         print(self.df.tail())
+
+
 # ========================================
 # METHOD: show_statistics
 # Calculates and displays statistical summary
@@ -138,7 +148,9 @@ class DataAnalyzer:
             print(f"  Min: {self.df[col].min():.2f}")
             print(f"  Max: {self.df[col].max():.2f}")
             print(f"  Range: {self.df[col].max() - self.df[col].min():.2f}")
-            # ========================================
+
+
+# ========================================
 # METHOD: check_missing_data
 # Checks for missing values in the dataset
 # ========================================
@@ -160,7 +172,10 @@ class DataAnalyzer:
             print("\n❌ Missing values found:")
             for col, count in missing.items():
                 if count > 0:
-                    print(f"  {col}: {count} missing values ({count/len(self.df)*100:.1f}%)")# ========================================
+                    print(f"  {col}: {count} missing values ({count/len(self.df)*100:.1f}%)")
+
+
+# ========================================
 # METHOD: analyze_grades
 # Analyzes grade data across subjects
 # ========================================
@@ -197,6 +212,12 @@ class DataAnalyzer:
             print(f"    D (60-69): {len(self.df[(self.df[col] >= 60) & (self.df[col] < 70)])}")
             print(f"    F (0-59): {len(self.df[self.df[col] < 60])}")
 
+
+# ========================================
+# METHOD: ensure_average_exists
+# Ensures Average column exists
+# ========================================
+
     def ensure_average_exists(self):
         """Ensure the Average column exists for the dataset."""
         if self.df is None:
@@ -208,6 +229,7 @@ class DataAnalyzer:
                 self.df['Average'] = self.df[grade_cols].mean(axis=1)
             else:
                 print("❌ Cannot compute Average: grade columns are missing.")
+
 
 # ========================================
 # METHOD: analyze_correlations
@@ -239,7 +261,9 @@ class DataAnalyzer:
                     col1 = correlation.columns[i]
                     col2 = correlation.columns[j]
                     print(f"  {col1} ↔ {col2}: {corr:.3f}")
-                    # ========================================
+
+
+# ========================================
 # METHOD: find_top_performers
 # Identifies top performing students
 # ========================================
@@ -273,52 +297,270 @@ class DataAnalyzer:
 
 # ========================================
 # METHOD: create_visualizations
-# Creates data visualizations
+# Creates 8 enhanced data visualizations
 # ========================================
 
     def create_visualizations(self):
-        """Create data visualizations"""
+        """Create multiple data visualizations"""
         if self.df is None:
             print("❌ No data loaded!")
             return
         
         self.ensure_average_exists()
         
-        print("\n📊 Creating visualizations...")
+        print("\n📊 Creating enhanced visualizations...")
         
-        # Create figure with subplots
-        fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-        fig.suptitle('Student Data Analysis', fontsize=16)
+        # ========================================
+        # VISUALIZATION 1: Subject Performance
+        # Bar chart showing average grades by subject
+        # ========================================
         
-        # 1. Grade Distribution
+        print("\n1️⃣ Creating Subject Performance Chart...")
+        fig1, ax1 = plt.subplots(figsize=(10, 6))
+        
         grade_cols = ['Grade_English', 'Grade_Math', 'Grade_Science', 'Grade_History']
         avg_grades = [self.df[col].mean() for col in grade_cols]
-        axes[0, 0].bar(grade_cols, avg_grades, color=['blue', 'green', 'red', 'orange'])
-        axes[0, 0].set_title('Average Grades by Subject')
-        axes[0, 0].set_ylabel('Average Score')
-        axes[0, 0].set_ylim(0, 100)
+        subject_labels = ['English', 'Math', 'Science', 'History']
+        colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A']
         
-        # 2. Study Hours vs Grades
-        axes[0, 1].scatter(self.df['Study_Hours'], self.df['Average'], color='purple', alpha=0.6)
-        axes[0, 1].set_title('Study Hours vs Average Grade')
-        axes[0, 1].set_xlabel('Study Hours')
-        axes[0, 1].set_ylabel('Average Grade')
+        bars = ax1.bar(subject_labels, avg_grades, color=colors, edgecolor='black', linewidth=1.5)
+        ax1.set_title('📊 Average Grades by Subject', fontsize=16, fontweight='bold')
+        ax1.set_ylabel('Average Score', fontsize=12)
+        ax1.set_ylim(0, 100)
+        ax1.grid(True, alpha=0.3, axis='y')
         
-        # 3. Attendance vs Grades
-        axes[1, 0].scatter(self.df['Attendance'], self.df['Average'], color='green', alpha=0.6)
-        axes[1, 0].set_title('Attendance vs Average Grade')
-        axes[1, 0].set_xlabel('Attendance %')
-        axes[1, 0].set_ylabel('Average Grade')
-        
-        # 4. Grade Distribution Histogram
-        axes[1, 1].hist(self.df['Average'], bins=10, color='orange', edgecolor='black')
-        axes[1, 1].set_title('Grade Distribution')
-        axes[1, 1].set_xlabel('Average Grade')
-        axes[1, 1].set_ylabel('Number of Students')
+        # Add value labels on bars
+        for bar, value in zip(bars, avg_grades):
+            height = bar.get_height()
+            ax1.text(bar.get_x() + bar.get_width()/2., height + 1,
+                    f'{value:.1f}', ha='center', va='bottom', fontweight='bold')
         
         plt.tight_layout()
         plt.show()
-        print("✅ Visualizations displayed!")
+        
+        # ========================================
+        # VISUALIZATION 2: Grade Distribution
+        # Histogram showing grade distribution
+        # ========================================
+        
+        print("\n2️⃣ Creating Grade Distribution Chart...")
+        fig2, ax2 = plt.subplots(figsize=(10, 6))
+        
+        ax2.hist(self.df['Average'], bins=10, color='#45B7D1', edgecolor='black', alpha=0.7)
+        ax2.set_title('📈 Grade Distribution', fontsize=16, fontweight='bold')
+        ax2.set_xlabel('Average Grade', fontsize=12)
+        ax2.set_ylabel('Number of Students', fontsize=12)
+        ax2.grid(True, alpha=0.3, axis='y')
+        
+        # Add vertical line for average
+        mean_grade = self.df['Average'].mean()
+        ax2.axvline(mean_grade, color='red', linestyle='--', linewidth=2, 
+                   label=f'Mean: {mean_grade:.2f}')
+        ax2.legend()
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # VISUALIZATION 3: Study Hours vs Grades
+        # Scatter plot with trend line
+        # ========================================
+        
+        print("\n3️⃣ Creating Study Hours Analysis...")
+        fig3, ax3 = plt.subplots(figsize=(10, 6))
+        
+        # Scatter plot
+        scatter = ax3.scatter(self.df['Study_Hours'], self.df['Average'], 
+                            c=self.df['Average'], cmap='viridis', s=100, alpha=0.7)
+        
+        # Add trend line
+        z = np.polyfit(self.df['Study_Hours'], self.df['Average'], 1)
+        p = np.poly1d(z)
+        ax3.plot(self.df['Study_Hours'], p(self.df['Study_Hours']), 
+                color='red', linestyle='--', linewidth=2, label='Trend Line')
+        
+        ax3.set_title('📚 Study Hours vs Average Grade', fontsize=16, fontweight='bold')
+        ax3.set_xlabel('Study Hours per Week', fontsize=12)
+        ax3.set_ylabel('Average Grade', fontsize=12)
+        ax3.grid(True, alpha=0.3)
+        ax3.legend()
+        
+        # Add colorbar
+        cbar = plt.colorbar(scatter)
+        cbar.set_label('Grade Score', fontsize=10)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # VISUALIZATION 4: Attendance vs Grades
+        # Scatter plot with trend line
+        # ========================================
+        
+        print("\n4️⃣ Creating Attendance Analysis...")
+        fig4, ax4 = plt.subplots(figsize=(10, 6))
+        
+        # Scatter plot
+        scatter = ax4.scatter(self.df['Attendance'], self.df['Average'], 
+                            c=self.df['Average'], cmap='plasma', s=100, alpha=0.7)
+        
+        # Add trend line
+        z = np.polyfit(self.df['Attendance'], self.df['Average'], 1)
+        p = np.poly1d(z)
+        ax4.plot(self.df['Attendance'], p(self.df['Attendance']), 
+                color='red', linestyle='--', linewidth=2, label='Trend Line')
+        
+        ax4.set_title('🎯 Attendance vs Average Grade', fontsize=16, fontweight='bold')
+        ax4.set_xlabel('Attendance %', fontsize=12)
+        ax4.set_ylabel('Average Grade', fontsize=12)
+        ax4.grid(True, alpha=0.3)
+        ax4.legend()
+        
+        # Add colorbar
+        cbar = plt.colorbar(scatter)
+        cbar.set_label('Grade Score', fontsize=10)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # VISUALIZATION 5: Box Plot
+        # Shows distribution of all subjects
+        # ========================================
+        
+        print("\n5️⃣ Creating Box Plot Analysis...")
+        fig5, ax5 = plt.subplots(figsize=(10, 6))
+        
+        data = [self.df['Grade_English'], self.df['Grade_Math'], 
+                self.df['Grade_Science'], self.df['Grade_History']]
+        box = ax5.boxplot(data, labels=['English', 'Math', 'Science', 'History'], 
+                         patch_artist=True)
+        
+        # Color boxes
+        for patch, color in zip(box['boxes'], ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A']):
+            patch.set_facecolor(color)
+        
+        ax5.set_title('📦 Subject Grade Distribution', fontsize=16, fontweight='bold')
+        ax5.set_ylabel('Grades', fontsize=12)
+        ax5.grid(True, alpha=0.3, axis='y')
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # VISUALIZATION 6: Pie Chart
+        # Shows grade distribution categories
+        # ========================================
+        
+        print("\n6️⃣ Creating Grade Category Distribution...")
+        fig6, ax6 = plt.subplots(figsize=(8, 8))
+        
+        # Categorize grades
+        grades = self.df['Average']
+        categories = {
+            'Excellent (90-100)': len(grades[grades >= 90]),
+            'Good (80-89)': len(grades[(grades >= 80) & (grades < 90)]),
+            'Average (70-79)': len(grades[(grades >= 70) & (grades < 80)]),
+            'Below Average (60-69)': len(grades[(grades >= 60) & (grades < 70)]),
+            'Poor (0-59)': len(grades[grades < 60])
+        }
+        
+        labels = list(categories.keys())
+        sizes = list(categories.values())
+        colors = ['#2ECC71', '#F1C40F', '#E67E22', '#E74C3C', '#C0392B']
+        explode = (0.1, 0, 0, 0, 0)  # Explode the first slice
+        
+        wedges, texts, autotexts = ax6.pie(sizes, labels=labels, colors=colors, 
+                                           autopct='%1.1f%%', explode=explode,
+                                           shadow=True, startangle=90)
+        
+        ax6.set_title('🎯 Grade Category Distribution', fontsize=16, fontweight='bold')
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # VISUALIZATION 7: Correlation Heatmap
+        # Shows relationships between variables
+        # ========================================
+        
+        print("\n7️⃣ Creating Correlation Heatmap...")
+        fig7, ax7 = plt.subplots(figsize=(10, 8))
+        
+        # Calculate correlation matrix
+        numeric_cols = self.df.select_dtypes(include=[np.number])
+        corr = numeric_cols.corr()
+        
+        # Create heatmap
+        im = ax7.imshow(corr, cmap='coolwarm', aspect='auto', interpolation='nearest')
+        
+        # Add labels
+        ax7.set_xticks(range(len(corr.columns)))
+        ax7.set_yticks(range(len(corr.columns)))
+        ax7.set_xticklabels(corr.columns, rotation=45, ha='right')
+        ax7.set_yticklabels(corr.columns)
+        
+        # Add values in cells
+        for i in range(len(corr.columns)):
+            for j in range(len(corr.columns)):
+                text = ax7.text(j, i, f'{corr.iloc[i, j]:.2f}',
+                               ha='center', va='center', color='black' if abs(corr.iloc[i, j]) < 0.5 else 'white',
+                               fontsize=8)
+        
+        ax7.set_title('🔗 Correlation Heatmap', fontsize=16, fontweight='bold')
+        
+        # Add colorbar
+        cbar = plt.colorbar(im)
+        cbar.set_label('Correlation Coefficient', fontsize=10)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # VISUALIZATION 8: Age Distribution
+        # Shows age range of students
+        # ========================================
+        
+        print("\n8️⃣ Creating Age Distribution Chart...")
+        fig8, ax8 = plt.subplots(figsize=(10, 6))
+        
+        age_counts = self.df['Age'].value_counts().sort_index()
+        
+        bars = ax8.bar(age_counts.index, age_counts.values, color='#9B59B6', 
+                      edgecolor='black', linewidth=1.5, alpha=0.7)
+        
+        ax8.set_title('👥 Student Age Distribution', fontsize=16, fontweight='bold')
+        ax8.set_xlabel('Age', fontsize=12)
+        ax8.set_ylabel('Number of Students', fontsize=12)
+        ax8.grid(True, alpha=0.3, axis='y')
+        
+        # Add value labels
+        for bar, value in zip(bars, age_counts.values):
+            height = bar.get_height()
+            ax8.text(bar.get_x() + bar.get_width()/2., height + 0.5,
+                    f'{value}', ha='center', va='bottom', fontweight='bold')
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # ========================================
+        # SUMMARY
+        # ========================================
+        
+        print("\n" + "=" * 60)
+        print("📊 VISUALIZATION COMPLETE!")
+        print("=" * 60)
+        print("\nCreated 8 visualizations:")
+        print("  1. 📊 Subject Performance - Bar Chart")
+        print("  2. 📈 Grade Distribution - Histogram")
+        print("  3. 📚 Study Hours vs Grades - Scatter Plot")
+        print("  4. 🎯 Attendance vs Grades - Scatter Plot")
+        print("  5. 📦 Subject Grade Distribution - Box Plot")
+        print("  6. 🎯 Grade Category Distribution - Pie Chart")
+        print("  7. 🔗 Correlation Heatmap")
+        print("  8. 👥 Age Distribution - Bar Chart")
+        print("=" * 60)
+        print("✅ All visualizations displayed successfully!")
 
 
 # ========================================
@@ -358,7 +600,10 @@ class DataAnalyzer:
             f.write(f"  Average Grade: {self.df['Average'].mean():.2f}\n")
             f.write(f"  Top Student: {self.df.nlargest(1, 'Average')['Name'].iloc[0]}\n")
         
-        print("\n✅ Report saved to 'analysis_report.txt'")# ========================================
+        print("\n✅ Report saved to 'analysis_report.txt'")
+
+
+# ========================================
 # METHOD: run_analysis
 # Main program loop with menu
 # ========================================
