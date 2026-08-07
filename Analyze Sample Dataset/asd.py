@@ -433,8 +433,11 @@ class DataAnalyzer:
         
         data = [self.df['Grade_English'], self.df['Grade_Math'], 
                 self.df['Grade_Science'], self.df['Grade_History']]
-        box = ax5.boxplot(data, labels=['English', 'Math', 'Science', 'History'], 
-                         patch_artist=True)
+        box = ax5.boxplot(data, patch_artist=True)
+        
+        # Set x-axis labels manually for compatibility with older Matplotlib versions
+        ax5.set_xticks([1, 2, 3, 4])
+        ax5.set_xticklabels(['English', 'Math', 'Science', 'History'])
         
         # Color boxes
         for patch, color in zip(box['boxes'], ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A']):
