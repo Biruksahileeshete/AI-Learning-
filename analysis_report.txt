@@ -1,0 +1,10 @@
+============================================================
+STUDENT DATA ANALYSIS REPORT
+============================================================
+Generated: 2026-08-07 11:40:50
+
+Dataset Information:
+  Total Students: 20
+  Subjects: English, Math, Science, History
+  Average Grade: 71.05
+  Top Student: Eve
