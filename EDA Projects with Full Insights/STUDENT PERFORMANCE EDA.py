@@ -5,6 +5,8 @@
 
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -84,7 +86,7 @@ class StudentEDA:
         print(numeric_cols.kurtosis())
         
         print("\nCategorical Columns Stats:")
-        for col in self.df.select_dtypes(include=['object']).columns:
+        for col in self.df.select_dtypes(include=['object', 'string']).columns:
             print(f"\n{col}:")
             print(f"  Unique values: {self.df[col].nunique()}")
             print(f"  Top value: {self.df[col].value_counts().index[0]} ({self.df[col].value_counts().values[0]})")
@@ -215,7 +217,7 @@ class StudentEDA:
         # 4. Boxplot - Gender vs Grade
         data = [self.df[self.df['Gender'] == 'Male']['Average_Grade'],
                 self.df[self.df['Gender'] == 'Female']['Average_Grade']]
-        axes[1, 0].boxplot(data, labels=['Male', 'Female'], patch_artist=True)
+        axes[1, 0].boxplot(data, tick_labels=['Male', 'Female'], patch_artist=True)
         axes[1, 0].set_ylabel('Average Grade', fontsize=11)
         axes[1, 0].set_title('Gender vs Grade', fontweight='bold')
         axes[1, 0].grid(True, alpha=0.3, axis='y')
@@ -223,7 +225,7 @@ class StudentEDA:
         # 5. Boxplot - Extracurricular vs Grade
         data = [self.df[self.df['Extracurricular'] == 'No']['Average_Grade'],
                 self.df[self.df['Extracurricular'] == 'Yes']['Average_Grade']]
-        axes[1, 1].boxplot(data, labels=['No', 'Yes'], patch_artist=True)
+        axes[1, 1].boxplot(data, tick_labels=['No', 'Yes'], patch_artist=True)
         axes[1, 1].set_ylabel('Average Grade', fontsize=11)
         axes[1, 1].set_title('Extracurricular vs Grade', fontweight='bold')
         axes[1, 1].grid(True, alpha=0.3, axis='y')
