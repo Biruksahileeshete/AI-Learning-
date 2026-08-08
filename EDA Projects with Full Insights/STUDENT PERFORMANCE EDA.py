@@ -3,6 +3,9 @@
 # Complete Exploratory Data Analysis
 # ========================================
 
+import os
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -13,6 +16,18 @@ import seaborn as sns
 class StudentEDA:
     def __init__(self):
         self.df = None
+        self.output_dir = Path(__file__).resolve().parent / "visualizations"
+        self.output_dir.mkdir(exist_ok=True)
+
+    def save_figure(self, filename, fig=None):
+        """Save a matplotlib figure to the visualizations folder."""
+        if fig is None:
+            fig = plt.gcf()
+        path = self.output_dir / filename
+        fig.tight_layout()
+        fig.savefig(path, dpi=200, bbox_inches='tight')
+        plt.close(fig)
+        return path
     
     def create_dataset(self):
         """Create comprehensive student dataset"""
@@ -120,7 +135,7 @@ class StudentEDA:
             axes[row, col_pos].grid(True, alpha=0.3)
         
         plt.tight_layout()
-        plt.show()
+        self.save_figure('01_univariate_numerical.png')
         
         # Categorical variables
         cat_cols = ['Gender', 'Extracurricular', 'Part_Time_Job', 'Family_Income', 'Performance']
@@ -148,7 +163,7 @@ class StudentEDA:
             fig.delaxes(axes[1, 2])
         
         plt.tight_layout()
-        plt.show()
+        self.save_figure('02_univariate_categorical.png')
         
         # Print key findings
         print("\n🔍 Key Findings from Univariate Analysis:")
@@ -168,13 +183,13 @@ class StudentEDA:
         # Correlation heatmap
         numeric_cols = self.df.select_dtypes(include=[np.number])
         
-        plt.figure(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize=(12, 8))
         corr = numeric_cols.corr()
         mask = np.triu(np.ones_like(corr, dtype=bool))
-        sns.heatmap(corr, mask=mask, annot=True, cmap='coolwarm', center=0, 
-                    fmt='.2f', linewidths=0.5)
-        plt.title('Correlation Heatmap - All Numerical Variables', fontsize=16, fontweight='bold')
-        plt.show()
+        sns.heatmap(corr, mask=mask, annot=True, cmap='coolwarm', center=0,
+                    fmt='.2f', linewidths=0.5, ax=ax)
+        ax.set_title('Correlation Heatmap - All Numerical Variables', fontsize=16, fontweight='bold')
+        self.save_figure('03_correlation_heatmap.png', fig)
         
         # Key scatter plots
         fig, axes = plt.subplots(2, 3, figsize=(18, 10))
@@ -239,7 +254,7 @@ class StudentEDA:
         axes[1, 2].grid(True, alpha=0.3, axis='y')
         
         plt.tight_layout()
-        plt.show()
+        self.save_figure('04_key_relationships.png', fig)
         
         # Print key findings
         print("\n🔍 Key Findings from Bivariate Analysis:")
@@ -318,7 +333,7 @@ class StudentEDA:
         axes[1, 1].set_title('Segment Statistics', fontweight='bold')
         
         plt.tight_layout()
-        plt.show()
+        self.save_figure('05_performance_segments.png')
         
         print("\n🔍 Key Findings from Multivariate Analysis:")
         print("\nPerformance Segment Profiles:")
@@ -360,7 +375,7 @@ class StudentEDA:
                 print(f"  {col}: {len(outliers)} outliers detected")
         
         plt.tight_layout()
-        plt.show()
+        self.save_figure('06_outlier_boxplots.png')
     
     def generate_insights(self):
         """7. Generate Full Insights Report"""
@@ -434,7 +449,7 @@ class StudentEDA:
         self.outlier_detection()
         self.generate_insights()
         
-        print("\n✅ EDA Complete! Full insights generated.")
+        print(f"\n✅ EDA Complete! Full insights generated. Visualizations saved to: {self.output_dir}")
 
 
 # ========================================
