@@ -24,7 +24,7 @@ class StudentEDA:
         if fig is None:
             fig = plt.gcf()
         path = self.output_dir / filename
-        fig.tight_layout()
+        fig.subplots_adjust(top=0.92, bottom=0.08, left=0.06, right=0.98, hspace=0.35, wspace=0.25)
         fig.savefig(path, dpi=200, bbox_inches='tight')
         plt.close(fig)
         return path
@@ -377,6 +377,71 @@ class StudentEDA:
         plt.tight_layout()
         self.save_figure('06_outlier_boxplots.png')
     
+    def create_dashboard_report(self):
+        """Create a single combined dashboard with all major chart types."""
+        fig = plt.figure(figsize=(18, 12), constrained_layout=True)
+        fig.suptitle('Student Performance EDA Dashboard', fontsize=20, fontweight='bold', y=0.98)
+
+        gs = fig.add_gridspec(2, 3)
+
+        # Histogram panel
+        ax1 = fig.add_subplot(gs[0, 0])
+        self.df['Average_Grade'].hist(bins=15, color='skyblue', edgecolor='black', ax=ax1)
+        ax1.axvline(self.df['Average_Grade'].mean(), color='red', linestyle='--', label=f'Mean: {self.df["Average_Grade"].mean():.1f}')
+        ax1.set_title('Grade Distribution')
+        ax1.set_xlabel('Average Grade')
+        ax1.set_ylabel('Frequency')
+        ax1.legend()
+
+        # Box plot panel
+        ax2 = fig.add_subplot(gs[0, 1])
+        grades_by_gender = [self.df[self.df['Gender'] == 'Male']['Average_Grade'],
+                            self.df[self.df['Gender'] == 'Female']['Average_Grade']]
+        ax2.boxplot(grades_by_gender, patch_artist=True, tick_labels=['Male', 'Female'])
+        ax2.set_title('Average Grade by Gender')
+        ax2.set_ylabel('Average Grade')
+
+        # Scatter plot panel
+        ax3 = fig.add_subplot(gs[0, 2])
+        ax3.scatter(self.df['Study_Hours'], self.df['Average_Grade'], alpha=0.6, c='blue')
+        z = np.polyfit(self.df['Study_Hours'], self.df['Average_Grade'], 1)
+        p = np.poly1d(z)
+        x_line = np.linspace(self.df['Study_Hours'].min(), self.df['Study_Hours'].max(), 100)
+        ax3.plot(x_line, p(x_line), color='red', linewidth=2, label='Trend')
+        ax3.set_title('Study Hours vs Grade')
+        ax3.set_xlabel('Study Hours')
+        ax3.set_ylabel('Average Grade')
+        ax3.grid(True, alpha=0.3)
+        ax3.legend()
+
+        # Correlation heatmap panel
+        ax4 = fig.add_subplot(gs[1, 0])
+        corr = self.df.select_dtypes(include=[np.number]).corr()
+        sns.heatmap(corr, annot=True, cmap='coolwarm', center=0, fmt='.2f', linewidths=0.5, ax=ax4)
+        ax4.set_title('Correlation Heatmap')
+
+        # Bar chart panel
+        ax5 = fig.add_subplot(gs[1, 1])
+        income_groups = self.df.groupby('Family_Income')['Average_Grade'].mean()
+        ax5.bar(income_groups.index, income_groups.values, color='purple', alpha=0.7)
+        ax5.set_title('Average Grade by Family Income')
+        ax5.set_xlabel('Family Income')
+        ax5.set_ylabel('Average Grade')
+        ax5.grid(True, alpha=0.3, axis='y')
+
+        # Performance category panel
+        ax6 = fig.add_subplot(gs[1, 2])
+        performance_counts = self.df['Performance'].value_counts().sort_index()
+        ax6.bar(performance_counts.index.astype(str), performance_counts.values, color='lightcoral', edgecolor='black')
+        ax6.set_title('Performance Distribution')
+        ax6.set_xlabel('Performance')
+        ax6.set_ylabel('Students')
+        ax6.grid(True, alpha=0.3, axis='y')
+
+        fig.subplots_adjust(top=0.92, bottom=0.08, left=0.06, right=0.98, hspace=0.35, wspace=0.25)
+        self.save_figure('dashboard_report.png', fig)
+        print(f"\n📊 Dashboard saved to: {self.output_dir / 'dashboard_report.png'}")
+
     def generate_insights(self):
         """7. Generate Full Insights Report"""
         print("\n" + "="*60)
@@ -448,6 +513,7 @@ class StudentEDA:
         self.multivariate_analysis()
         self.outlier_detection()
         self.generate_insights()
+        self.create_dashboard_report()
         
         print(f"\n✅ EDA Complete! Full insights generated. Visualizations saved to: {self.output_dir}")
 
